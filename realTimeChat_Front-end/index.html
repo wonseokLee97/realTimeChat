@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.2/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="chat-app">
+        <h1>익명 채팅방 v1. (<span id="current-user-count">0</span>명 접속중)</h1>
+        <div id="chatting" class="chat-container">
+            <!-- 채팅 메시지가 여기에 추가됩니다 -->
+        </div>
+        <div id="user-info">
+            <span>+접속한 사용자: <span id="current-user-name"></span> <span id="current-user-id"></span></span>
+        </div>
+        <form id="chat-form">
+            <input id="message" type="text" placeholder="메시지를 입력하세요" required>
+            <button id="send" type="button">전송</button>
+        </form>
+    </div>
+    <script src="chat.js"></script>
+</body>
+</html>
