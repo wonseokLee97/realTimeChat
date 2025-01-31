@@ -296,28 +296,38 @@ class ChatApp {
     constructor() {
         this.websocketManager = null;  // WebSocketManager 인스턴스 초기화
         this.localhost = 'http://localhost:8080';
-        this.token = null;
-        this.expired = false;
+        this.token = localStorage.getItem('token'); // localStorage 에서 가져옴
         this.roomId = "9fc1b646-e043-463b-aa17-ff9063540342"
     }
 
     // 애플리케이션 초기화 함수
     async init() {
         try {
-            // 만약, 토큰이 유효하거나 존재하면 init() 초기화 할 필요 없음
-            const response = await fetch(this.localhost + '/init');
+            const response = await fetch(this.localhost + '/init', {
+                headers: {
+                    'Authorization': 'Bearer ' + this.token
+                }
+            });
+            
             const data = await response.json();
-    
-            // 토큰이 없거나 만료된 경우에만 새 토큰을 저장
+            console.log(data);
+            // response가 오지 않는 경우, 성공적으로 토큰 유효성 검사 완료
             if (data.response) {
-                if (!localStorage.getItem('token') || this.expired) {
+                // error가 발생한 경우 (EXPIRED_TOKEN, INVALID_TOKEN)
+                if (data.success == false) {
+                    // 새로운 토큰으로 변경
+                    console.log("토큰이 유효하지 않아 새로운 토큰을 발급합니다.")
+                    localStorage.setItem('token', data.response);
+                } 
+                // 성공적으로 발급 받은경우 (SUCCESS_TOKEN_ISSUANCE)
+                else { 
+                    console.log("토큰이 존재하지 않아 새로운 토큰을 발급합니다.")
                     localStorage.setItem('token', data.response);
                 }
             }
     
             this.token = localStorage.getItem('token');
             this.websocketManager = new WebSocketManager(this.token, this.roomId);  // WebSocketManager 생성
-    
         } catch (error) {
             console.error('Error:', error);
         } finally {
