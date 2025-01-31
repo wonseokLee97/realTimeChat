@@ -44,4 +44,16 @@ public class ApiResponse<T> {
                 .type(type)
                 .build();
     }
+
+    public static <T> ApiResponse<T> error(T response, String message, Type type) {
+        return ApiResponse.<T>builder()
+                .isSuccess(false)
+                .response(response)
+                .error(
+                        ErrorResponse.builder()
+                                .message(message)
+                                .build())
+                .type(type)
+                .build();
+    }
 }
