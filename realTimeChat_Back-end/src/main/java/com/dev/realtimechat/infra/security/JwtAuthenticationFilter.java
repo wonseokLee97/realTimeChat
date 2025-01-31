@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Set;
 
 
@@ -40,14 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        log.info("JwtAuthenticationFilter 신원 인증 : 진입");
-
         String token = resolveJwtToken(request);
         String ipAddress = IpAddressUtil.extractIpAddress(request); // Client IP
 
 
         // Case the token doesn't exist
-        if (token == null) {
+        if (token == null || token.equals("null")) {
             handleNoToken(ipAddress, response);
             return;
         }
@@ -62,28 +61,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             handleExpiredToken(ipAddress, response);
         } catch (Exception e) {
-            handleInvalidToken(response, "Invalid token");
+            handleInvalidToken(response, "INVALID_TOKEN");
         }
     }
 
     //if the token doesn't exist, publish new token.
     private void handleNoToken(String ipAddress, HttpServletResponse response) throws IOException {
         String newToken = jwtProvider.generateToken(ipAddress);
-        sendTokenResponse(response, newToken);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        objectMapper.writeValue(response.getWriter(), ApiResponse.success(
+                newToken,
+                SuccessType.SUCCESS_TOKEN_ISSUANCE));
     }
 
     // if the token has expired, publish new token.
     private void handleExpiredToken(String ipAddress, HttpServletResponse response) throws IOException {
         String newToken = jwtProvider.generateToken(ipAddress);
-        sendTokenResponse(response, newToken);
+        objectMapper.writeValue(response.getWriter(), ApiResponse.error(
+                newToken,
+                "EXPIRED_TOKEN",
+                ErrorType.EXPIRED_TOKEN));
     }
 
-    // if thoe token is failed to validate
+    // if the token is failed to validate
     private void handleInvalidToken(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        objectMapper.writeValue(response.getWriter(),
-                ApiResponse.error("INVALID_TOKEN", ErrorType.INVALID_TOKEN));
+        objectMapper.writeValue(response.getWriter(), ApiResponse.error(
+                message,
+                ErrorType.INVALID_TOKEN));
     }
 
     // 토큰을 담아 response
@@ -96,7 +102,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String resolveJwtToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(JwtProperties.HEADER_STRING);
-        log.info(String.valueOf(request.getHeaderNames()));
         if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
             return authorizationHeader.substring(JwtProperties.TOKEN_PREFIX.length());
         }
