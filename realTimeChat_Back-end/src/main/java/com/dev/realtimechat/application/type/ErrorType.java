@@ -17,7 +17,11 @@ public enum ErrorType implements Type{
 
     // 401 UNAUTHORIZED: 유효하지 않음
     INVALID_TOKEN(
-            HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다."),
+            HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
+    EXPIRED_TOKEN(
+            HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 새로운 토큰을 발급합니다."),
+    NO_TOKEN(
+            HttpStatus.UNAUTHORIZED, "토큰이 없습니다. 새로운 토큰을 발급합니다."),
 
 
     // 403 FORBIDDEN: 권한 없음
