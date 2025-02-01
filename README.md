@@ -161,8 +161,8 @@
 ## 아키택처 및 ERD
 
 <div style="margin:10px 0 20px 0;display:flex">
- <img style="margin: 30px 30px 30px 30px" src='https://github.com/user-attachments/assets/61b771a4-05b0-4290-b308-eaf042464451' width="800px"/>
- <img style="margin: 30px 30px 30px 30px" src='https://github.com/user-attachments/assets/902b572c-4385-4017-b2d7-0ddaa56461d3' width="200px" height="400px"/>
+ <img style="margin: 0 10px 0 0" src='https://github.com/user-attachments/assets/61b771a4-05b0-4290-b308-eaf042464451' width="800px"/>
+ <img style="margin: 0 10px 0 0" src='https://github.com/user-attachments/assets/902b572c-4385-4017-b2d7-0ddaa56461d3' width="200px" height="400px"/>
 </div>
 
 
