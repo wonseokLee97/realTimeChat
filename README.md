@@ -76,10 +76,10 @@
 ### 1. 익명 기반 실시간 채팅
 ![chat](https://github.com/user-attachments/assets/de1d7948-0904-4b8e-a1ee-63d804ab78c3)
 - JWT 토큰을 활용한 사용자 신원 부여 및 인증 
-  - 사용자가 재접속 시 JWT를 기반으로 인증하여 세션이 새롭게 시작되더라도 이전의 채팅 기록을 자동으로 로딩하고 식별할 수 있음. <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/infra/security/JwtProvider.java#L36C1-L49C1)
+  - 세션이 새롭게 Connect 되더라도(사용자의 재접속 or 새로고침) LocalStorage의 JWT를 기반으로 이전의 본인 채팅 기록을 식별할 수 있음(파란색 채팅이 본인). <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/infra/security/JwtProvider.java#L36C1-L49C1)
   
 - Spring 내장 메시징 브로커와 STOMP 프로토콜
-  - 실시간 메시지 전송 및 접속 인원 관리 구현 <br/> [(메시징 Broker 코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/master/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/presentation/ChatWebSocketController.java) <br/> [(접속자 수 Handler 코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/infra/handler/StompListener.java#L10C1-L35C2)
+  - 메시지 브로커를 기반으로 실시간 메시지 및 접속 인원을 새로고침 없이 브라우저에 로딩 <br/> [(메시징 Broker 코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/master/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/presentation/ChatWebSocketController.java) <br/> [(접속자 수 Handler 코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/infra/handler/StompListener.java#L10C1-L35C2)
 
 - 즉시 서비스 사용
   - 별도의 로그인/회원가입 없이 즉시 서비스 사용 가능 (익명 채팅 기반)
@@ -141,7 +141,7 @@
 ![2-1](https://github.com/user-attachments/assets/04bd1068-9112-4f39-b6f7-df48757d1c7b)
 
 **1. Subscribe (Client)**
-- 클라이언트는 연결 후 `/sub/channel/roomId`(실시간 메시지)와 `/sub/channel/entry`(채팅방 입장 인원)를 구독합니다.
+- 클라이언트는 연결 후 `/sub/channel/roomId`와 `/sub/channel/entry`를 구독합니다.
 - `/sub/channel/roomId`: 실시간 메시지 전송을 수신하기 위함
 - `/sub/channel/entry`: 실시간 채팅방 입장 인원을 수신하기 위함 <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/905bcdfa9ae08d63ea3f131a71e9f77660d661d9/realTimeChat_Front-end/chat.js#L50C1-L65C6)
 
@@ -153,8 +153,8 @@
 <br/>
 
 **3. Message (Server)** 
-- 서버는 클라이언트의 연결 상태를 감지하여 `/sub/channel/entry`의 구독자들에게 Session '참여자 수'를 send 한다. <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/infra/handler/StompListener.java#L10C1-L35C2)
-- 서버는 메시지 브로커를 통해 `/sub/channel/roomId`의 구독자들에게 실시간 채팅 메시지를 send 한다. <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/presentation/ChatWebSocketController.java)
+- 서버는 새로운 세션의 Connect를 감지하면 메시지 브로커를 통해 `/sub/channel/entry` 구독자들에게 Session '참여자 수'를 send 한다. <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/infra/handler/StompListener.java#L10C1-L35C2)
+- 서버는 클라이언트의 메시지 발행을 감지하면 메시지 브로커를 통해 `/sub/channel/roomId`의 구독자들에게 실시간 채팅 메시지를 send 한다. <br/> [(코드 링크)](https://github.com/wonseokLee97/realTimeChat/blob/fa5a668bd7ea3cca643b5f16cfa26272eae377a9/realTimeChat_Back-end/src/main/java/com/dev/realtimechat/presentation/ChatWebSocketController.java)
 
 <br/><br/>
 
