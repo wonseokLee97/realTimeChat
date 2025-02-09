@@ -168,6 +168,104 @@
 
 <br/><br/><br/><br/>
 
+## 패키징 구조
+
+![패키징](https://github.com/user-attachments/assets/62971eab-adf8-453f-8b52-3ffc003c82c0)
+
+
+```
+└─com
+    └─dev
+        └─realtimechat
+            │  RealTimeChatApplication.java
+            │
+            ├─chat
+            │  ├─application
+            │  │      ChatService.java
+            │  │      ChatServiceImpl.java
+            │  │
+            │  ├─config
+            │  │      WebSocketConfig.java
+            │  │
+            │  ├─domain
+            │  │      Chat.java
+            │  │
+            │  ├─handler
+            │  │      StompListener.java
+            │  │      WebSocketBroadCaster.java
+            │  │
+            │  ├─infrastructure
+            │  │  │  ChatRepository.java
+            │  │  │
+            │  │  ├─jdbc
+            │  │  ├─jpa
+            │  │  │      JpaChatRepository.java
+            │  │  │
+            │  │  └─springdatajpa
+            │  │          SpringDataJpaChatRepository.java
+            │  │
+            │  └─presentation
+            │          ChatController.java
+            │          ChatWebSocketController.java
+            │
+            ├─chatRoom
+            │  ├─application
+            │  │      ChatRoomService.java
+            │  │      ChatRoomServiceImpl.java
+            │  │
+            │  ├─domain
+            │  │      Champion.java
+            │  │      ChatRoom.java
+            │  │
+            │  ├─infrastructure
+            │  │  │  ChatRoomRepository.java
+            │  │  │
+            │  │  ├─jdbc
+            │  │  ├─jpa
+            │  │  │      JpaChatRoomRepository.java
+            │  │  │
+            │  │  └─springdatajpa
+            │  │          SpringDataJpaChatRoomRepository.java
+            │  │
+            │  └─presentation
+            │          ChatRoomController.java
+            │
+            ├─config
+            │      CorsConfig.java
+            │      MainConfig.java
+            │      WebSecurityConfig.java
+            │
+            └─shared
+                ├─common
+                │  ├─api
+                │  │      ApiResponse.java
+                │  │      ErrorResponse.java
+                │  │
+                │  ├─dto
+                │  │      ChatMessageDto.java
+                │  │      ChatRoomDto.java
+                │  │
+                │  ├─exception
+                │  └─type
+                │          ErrorType.java
+                │          SuccessType.java
+                │          Type.java
+                │
+                ├─jwt
+                │      JwtAuthenticationFilter.java
+                │      JwtAuthenticationProvider.java
+                │      JwtAuthenticationToken.java
+                │      JwtChannelInterceptor.java
+                │      JwtException.java
+                │      JwtProperties.java
+                │      JwtProvider.java
+                │      TokenClaims.java
+                │
+                └─utils
+                        IpAddressUtil.java
+```
+
+
 ## 주요 성과 및 배운 점
 
 
