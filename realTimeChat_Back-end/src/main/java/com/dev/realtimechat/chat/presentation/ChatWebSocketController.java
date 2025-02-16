@@ -2,8 +2,8 @@ package com.dev.realtimechat.chat.presentation;
 
 
 import com.dev.realtimechat.chat.application.ChatService;
-import com.dev.realtimechat.shared.common.dto.ChatMessageDto;
 import com.dev.realtimechat.chat.domain.Chat;
+import com.dev.realtimechat.shared.global.dto.ChatMessageDto;
 import com.dev.realtimechat.shared.jwt.JwtProvider;
 import com.dev.realtimechat.shared.jwt.TokenClaims;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +26,12 @@ public class ChatWebSocketController {
     public void createChat(
             ChatMessageDto.ChatMessageRequest request,
             @Header("token") String token
-            ) {
+    ) {
         TokenClaims tokenClaims = jwtProvider.getTokenClaims(token);
         Chat chat = chatService.createChat(request, tokenClaims.getRandId(), tokenClaims.getNameTag(), tokenClaims.getIpAddress());
 
         messagingTemplate.convertAndSend(
-                "/sub/channel/" + chat.getChatRoom().getId(),
+                "/sub/channel/" + chat.getChatRoomId(),
                 ChatMessageDto.ChatMessageResponse.builder()
                         .message(chat.getMessage())
                         .randId(chat.getRandId())
@@ -42,4 +42,3 @@ public class ChatWebSocketController {
         );
     }
 }
-
