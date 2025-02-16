@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface ChatRepository {
     void save(Chat chat);
-    List<Chat> findChatsWithPagination(String roomId, int limit, int offset);
+    List<Chat> findChatsWithPaginationByOffset(String roomId, int limit, int offset);
+    List<Chat> findChatsWithPaginationByLastMessageId(String roomId, int lastMessageId, int offset);
 }
