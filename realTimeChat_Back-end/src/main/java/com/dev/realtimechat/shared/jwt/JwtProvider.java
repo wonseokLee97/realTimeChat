@@ -1,6 +1,6 @@
 package com.dev.realtimechat.shared.jwt;
 
-import com.dev.realtimechat.chatRoom.domain.Champion;
+import com.dev.realtimechat.chatroom.domain.Champion;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

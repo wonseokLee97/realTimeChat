@@ -1,8 +1,8 @@
 package com.dev.realtimechat.shared.jwt;
 
-import com.dev.realtimechat.shared.common.api.ApiResponse;
-import com.dev.realtimechat.shared.common.type.ErrorType;
-import com.dev.realtimechat.shared.common.type.SuccessType;
+import com.dev.realtimechat.shared.global.api.ApiResponse;
+import com.dev.realtimechat.shared.global.type.http.HttpErrorType;
+import com.dev.realtimechat.shared.global.type.http.HttpSuccessType;
 import com.dev.realtimechat.shared.utils.IpAddressUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -68,9 +68,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleNoToken(String ipAddress, HttpServletResponse response) throws IOException {
         String newToken = jwtProvider.generateToken(ipAddress);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        objectMapper.writeValue(response.getWriter(), ApiResponse.success(
-                newToken,
-                SuccessType.SUCCESS_TOKEN_ISSUANCE));
+        objectMapper.writeValue(
+                response.getWriter(),
+                ApiResponse.success(
+                        newToken,
+                        HttpSuccessType.SUCCESS_TOKEN_ISSUANCE)
+        );
     }
 
     // if the token has expired, publish new token.
@@ -79,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         objectMapper.writeValue(response.getWriter(), ApiResponse.error(
                 newToken,
                 "EXPIRED_TOKEN",
-                ErrorType.EXPIRED_TOKEN));
+                HttpErrorType.EXPIRED_TOKEN));
     }
 
     // if the token is failed to validate
@@ -88,7 +91,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), ApiResponse.error(
                 message,
-                ErrorType.INVALID_TOKEN));
+                HttpErrorType.INVALID_TOKEN));
     }
 
     // 토큰을 담아 response
@@ -96,7 +99,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         objectMapper.writeValue(response.getWriter(), ApiResponse.success(
                 token,
-                SuccessType.SUCCESS_TOKEN_ISSUANCE));
+                HttpSuccessType.SUCCESS_TOKEN_ISSUANCE));
     }
 
     private String resolveJwtToken(HttpServletRequest request) {

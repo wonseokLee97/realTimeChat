@@ -1,4 +1,4 @@
-package com.dev.realtimechat.shared.common.dto;
+package com.dev.realtimechat.shared.global.dto;
 
 import com.dev.realtimechat.chat.domain.Chat;
 import lombok.*;
@@ -8,6 +8,7 @@ public class ChatMessageDto {
 
     @Data
     public static class ChatMessageResponse {
+        private final long id;
         private final String message;
         private final String randId;
         private final String nameTag;
@@ -16,7 +17,8 @@ public class ChatMessageDto {
 
         // 정적 팩터리 메서드, 도메인 패턴
         @Builder
-        private ChatMessageResponse(String message, String randId, String nameTag, String createdAt, String ipAddress) {
+        private ChatMessageResponse(long id, String message, String randId, String nameTag, String createdAt, String ipAddress) {
+            this.id = id;
             this.message = message;
             this.randId = randId;
             this.nameTag = nameTag;
@@ -26,6 +28,7 @@ public class ChatMessageDto {
 
         public static ChatMessageResponse create(Chat chat) {
             return ChatMessageResponse.builder()
+                    .id(chat.getId())
                     .message(chat.getMessage())
                     .randId(chat.getRandId())
                     .nameTag(chat.getNameTag())

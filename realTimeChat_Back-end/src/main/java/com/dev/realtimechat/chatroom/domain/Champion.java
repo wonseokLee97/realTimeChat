@@ -1,4 +1,4 @@
-package com.dev.realtimechat.chatRoom.domain;
+package com.dev.realtimechat.chatroom.domain;
 
 public enum Champion {
     아트록스, 아리, 아칼리, 알리스타, 아무무, 애니비아, 애니, 아펠리오스,

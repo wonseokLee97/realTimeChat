@@ -7,49 +7,33 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-public enum ErrorType implements Type {
+public enum HttpErrorType implements Type {
 
     // 400 BAD_REQUEST: 잘못된 요청
-    INVALID_PARAMETER(
-            HttpStatus.BAD_REQUEST, "파라미터 값을 확인해주세요."),
-    ALREADY_CREATED_TOKEN(
-            HttpStatus.BAD_REQUEST, "이미 토큰이 존재합니다"),
+    INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "잘못된 파라미터"),
+    ALREADY_CREATED_TOKEN(HttpStatus.BAD_REQUEST, "이미 존재하는 토큰"),
 
-
-    // 401 UNAUTHORIZED: 유효하지 않음
-    INVALID_TOKEN(
-            HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
-    EXPIRED_TOKEN(
-            HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다. 새로운 토큰을 발급합니다."),
-    NO_TOKEN(
-            HttpStatus.UNAUTHORIZED, "토큰이 없습니다. 새로운 토큰을 발급합니다."),
-
+    // 401 UNAUTHORIZED: 인증 실패
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰"),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰"),
+    NO_TOKEN(HttpStatus.UNAUTHORIZED, "존재하지 않는 토큰"),
 
     // 403 FORBIDDEN: 권한 없음
-    FORBIDDEN_ACCESS(
-            HttpStatus.FORBIDDEN, "권한이 없는 접근입니다."),
+    FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "권한 없음"),
 
+    // 404 NOT_FOUND: 리소스를 찾을 수 없음
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "존재하지 않는 유저"),
+    NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "존재하지 않는 토큰"),
+    NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방"),
 
-    // 404 NOT_FOUND: 잘못된 리소스 접근
-    NOT_FOUND_USER(
-            HttpStatus.NOT_FOUND, "존재하지 않는 유저 입니다."),
-    NOT_FOUND_TOKEN(
-            HttpStatus.NOT_FOUND, "토큰을 찾을 수 없습니다."),
-    NOT_FOUND_CHATROOM(
-            HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
-
-    // 409 CONFLICT: 요청이 서버의 현재 상태와 충돌
-    ALREADY_CREATED_USER_ID(
-            HttpStatus.CONFLICT, "중복된 유저 아이디 입니다."),
-    ALREADY_CREATED_EMAIL(
-            HttpStatus.CONFLICT, "중복된 이메일 입니다."),
-
+    // 409 CONFLICT: 충돌 발생
+    ALREADY_CREATED_USER_ID(HttpStatus.CONFLICT, "중복된 유저 아이디"),
+    ALREADY_CREATED_EMAIL(HttpStatus.CONFLICT, "중복된 이메일"),
 
     // 500 INTERNAL SERVER ERROR
-    INTERNAL_SERVER_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러입니다. 서버 팀에 연락주세요!");
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류");
 
     private final HttpStatus status;
     private final String message;
 }
+

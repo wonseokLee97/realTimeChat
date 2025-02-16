@@ -1,6 +1,6 @@
-package com.dev.realtimechat.chatRoom.infrastructure.springdatajpa;
+package com.dev.realtimechat.chatroom.infrastructure.springdatajpa;
 
-import com.dev.realtimechat.chatRoom.domain.ChatRoom;
+import com.dev.realtimechat.chatroom.domain.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

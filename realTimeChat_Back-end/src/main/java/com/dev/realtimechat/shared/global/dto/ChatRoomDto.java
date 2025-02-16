@@ -1,4 +1,4 @@
-package com.dev.realtimechat.shared.common.dto;
+package com.dev.realtimechat.shared.global.dto;
 
 public class ChatRoomDto {
     public record CreatePrivateRoomRequest(String senderId, String receiverId) {}

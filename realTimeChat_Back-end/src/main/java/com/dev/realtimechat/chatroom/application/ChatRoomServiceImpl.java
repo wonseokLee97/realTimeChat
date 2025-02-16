@@ -1,8 +1,8 @@
-package com.dev.realtimechat.chatRoom.application;
+package com.dev.realtimechat.chatroom.application;
 
-import com.dev.realtimechat.chatRoom.infrastructure.ChatRoomRepository;
-import com.dev.realtimechat.shared.common.dto.ChatRoomDto;
-import com.dev.realtimechat.chatRoom.domain.ChatRoom;
+import com.dev.realtimechat.chatroom.infrastructure.ChatRoomRepository;
+import com.dev.realtimechat.shared.global.dto.ChatRoomDto;
+import com.dev.realtimechat.chatroom.domain.ChatRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,10 +13,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatRoomServiceImpl implements ChatRoomService {
-
     private final ChatRoomRepository chatRoomRepository;
 
-    // 생성자 주입 생략
     @Override
     public ChatRoomDto.CreatePrivateRoomResponse createPrivateRoom(
             ChatRoomDto.CreatePrivateRoomRequest request) {

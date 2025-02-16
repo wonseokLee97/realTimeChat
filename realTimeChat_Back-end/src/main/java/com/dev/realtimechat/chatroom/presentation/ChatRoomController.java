@@ -1,9 +1,9 @@
-package com.dev.realtimechat.chatRoom.presentation;
+package com.dev.realtimechat.chatroom.presentation;
 
-import com.dev.realtimechat.chatRoom.application.ChatRoomService;
-import com.dev.realtimechat.shared.common.api.ApiResponse;
-import com.dev.realtimechat.shared.common.dto.ChatRoomDto;
-import com.dev.realtimechat.shared.common.type.SuccessType;
+import com.dev.realtimechat.chatroom.application.ChatRoomService;
+import com.dev.realtimechat.shared.global.api.ApiResponse;
+import com.dev.realtimechat.shared.global.dto.ChatRoomDto;
+import com.dev.realtimechat.shared.global.type.http.HttpSuccessType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +29,6 @@ public class ChatRoomController {
 
         return ApiResponse.success(
                 chatRoomService.createPrivateRoom(request),
-                SuccessType.SUCCESS_ROOM_CREATE);
+                HttpSuccessType.SUCCESS_ROOM_CREATE);
     }
 }

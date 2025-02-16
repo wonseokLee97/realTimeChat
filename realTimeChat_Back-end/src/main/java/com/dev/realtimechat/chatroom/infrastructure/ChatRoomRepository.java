@@ -1,6 +1,6 @@
-package com.dev.realtimechat.chatRoom.infrastructure;
+package com.dev.realtimechat.chatroom.infrastructure;
 
-import com.dev.realtimechat.chatRoom.domain.ChatRoom;
+import com.dev.realtimechat.chatroom.domain.ChatRoom;
 
 import java.util.Optional;
 

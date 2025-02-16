@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
+/*
+    WebSocket Connect 시에 인증처리
+ */
 public class JwtChannelInterceptor implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
     public @Value("${server.chat-room-id}") String roomId;

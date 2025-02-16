@@ -1,6 +1,6 @@
-package com.dev.realtimechat.shared.common.api;
+package com.dev.realtimechat.shared.global.api;
 
-import com.dev.realtimechat.shared.common.type.Type;
+import com.dev.realtimechat.shared.global.type.Type;
 import lombok.Builder;
 import lombok.Data;
 
@@ -37,10 +37,16 @@ public class ApiResponse<T> {
         return ApiResponse.<T>builder()
                 .isSuccess(false)
                 .response(null)
-                .error(
-                        ErrorResponse.builder()
-                                .message(message)
-                                .build())
+                .error(ErrorResponse.of(message))
+                .type(type)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> error(String message, Type type, Throwable cause) {
+        return ApiResponse.<T>builder()
+                .isSuccess(false)
+                .response(null)
+                .error(ErrorResponse.of(message, cause))
                 .type(type)
                 .build();
     }
@@ -49,10 +55,16 @@ public class ApiResponse<T> {
         return ApiResponse.<T>builder()
                 .isSuccess(false)
                 .response(response)
-                .error(
-                        ErrorResponse.builder()
-                                .message(message)
-                                .build())
+                .error(ErrorResponse.of(message))
+                .type(type)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> error(T response, String message, Type type, Throwable cause) {
+        return ApiResponse.<T>builder()
+                .isSuccess(false)
+                .response(response)
+                .error(ErrorResponse.of(message, cause))
                 .type(type)
                 .build();
     }

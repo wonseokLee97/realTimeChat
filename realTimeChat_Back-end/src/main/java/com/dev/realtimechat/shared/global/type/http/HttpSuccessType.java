@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum SuccessType implements Type {
+public enum HttpSuccessType implements Type {
 
     // 200: 요청 성공
     SUCCESS_GET_USER(200, "유저 정보 조회 성공."),

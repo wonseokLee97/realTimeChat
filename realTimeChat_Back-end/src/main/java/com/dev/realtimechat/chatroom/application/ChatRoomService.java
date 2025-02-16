@@ -1,6 +1,6 @@
-package com.dev.realtimechat.chatRoom.application;
+package com.dev.realtimechat.chatroom.application;
 
-import com.dev.realtimechat.shared.common.dto.ChatRoomDto;
+import com.dev.realtimechat.shared.global.dto.ChatRoomDto;
 import org.springframework.stereotype.Component;
 
 @Component

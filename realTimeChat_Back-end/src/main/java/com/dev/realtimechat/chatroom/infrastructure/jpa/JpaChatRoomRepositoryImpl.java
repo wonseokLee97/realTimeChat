@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class SpringDataJpaChatRoomRepositoryImpl implements ChatRoomRepository {
+public class JpaChatRoomRepositoryImpl implements ChatRoomRepository {
     private final SpringDataJpaChatRoomRepository springDataJpaChatRoomRepository;
 
     @Override
