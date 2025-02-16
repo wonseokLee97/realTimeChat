@@ -1,10 +1,11 @@
 package com.dev.realtimechat.chat.application;
 
-import com.dev.realtimechat.chat.infrastructure.ChatRepository;
-import com.dev.realtimechat.chatRoom.infrastructure.ChatRoomRepository;
-import com.dev.realtimechat.shared.common.dto.ChatMessageDto;
 import com.dev.realtimechat.chat.domain.Chat;
-import com.dev.realtimechat.chatRoom.domain.ChatRoom;
+import com.dev.realtimechat.chat.exception.CustomSocketException;
+import com.dev.realtimechat.chat.infrastructure.ChatRepository;
+import com.dev.realtimechat.chatroom.infrastructure.ChatRoomRepository;
+import com.dev.realtimechat.shared.global.dto.ChatMessageDto;
+import com.dev.realtimechat.chatroom.domain.ChatRoom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,15 +36,21 @@ public class ChatServiceImpl implements ChatService {
 
             return chat;
         } else {
-            log.error("채팅방이 존재하지 않습니다.");
-
-            return null;
+            // 채팅방이 없는 경우
+            throw new CustomSocketException.NoSuchChatRoomExceptionCustom();
         }
     }
 
     @Override
-    public List<ChatMessageDto.ChatMessageResponse> getChatList(String chatRoomId, int limit, int offset) {
-        return chatRepository.findChatsWithPagination(chatRoomId, limit, offset).stream()
+    public List<ChatMessageDto.ChatMessageResponse> getChatListByOffset(String roomId, int limit, int offset) {
+        return chatRepository.findChatsWithPaginationByOffset(roomId, limit, offset).stream()
+                .map(ChatMessageDto.ChatMessageResponse::create) // 각 Chat 객체를 ChatMessageResponse 로 변환
+                .collect(Collectors.toList()); // 변환된 결과를 List 로 수집
+    }
+
+    @Override
+    public List<ChatMessageDto.ChatMessageResponse> getChatListByLastMessageId(String roomId, int limit, int lastMessageId) {
+        return chatRepository.findChatsWithPaginationByLastMessageId(roomId, limit, lastMessageId).stream()
                 .map(ChatMessageDto.ChatMessageResponse::create) // 각 Chat 객체를 ChatMessageResponse 로 변환
                 .collect(Collectors.toList()); // 변환된 결과를 List 로 수집
     }
