@@ -37,7 +37,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // MessageBroker가 해당 "/sub" api를 구독하고 있는 클라이언트에게 메시지를 전달한다.
         // heart.beat 설정 25000ms -> 25s
-        registry.enableSimpleBroker("/sub")
+        registry.enableSimpleBroker("/sub", "/queue")
                 .setTaskScheduler(taskScheduler())
                 .setHeartbeatValue(new long[] {25000, 25000});
 
