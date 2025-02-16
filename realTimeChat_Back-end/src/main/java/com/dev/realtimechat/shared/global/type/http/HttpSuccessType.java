@@ -1,5 +1,6 @@
-package com.dev.realtimechat.shared.common.type;
+package com.dev.realtimechat.shared.global.type.http;
 
+import com.dev.realtimechat.shared.global.type.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

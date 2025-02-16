@@ -1,12 +1,13 @@
-package com.dev.realtimechat.shared.common.type;
+package com.dev.realtimechat.shared.global.type.http;
 
+import com.dev.realtimechat.shared.global.type.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-public enum ErrorType implements Type{
+public enum ErrorType implements Type {
 
     // 400 BAD_REQUEST: 잘못된 요청
     INVALID_PARAMETER(
@@ -33,7 +34,9 @@ public enum ErrorType implements Type{
     NOT_FOUND_USER(
             HttpStatus.NOT_FOUND, "존재하지 않는 유저 입니다."),
     NOT_FOUND_TOKEN(
-            HttpStatus.NOT_FOUND, "토큰을 찾을 수 없습니다"),
+            HttpStatus.NOT_FOUND, "토큰을 찾을 수 없습니다."),
+    NOT_FOUND_CHATROOM(
+            HttpStatus.NOT_FOUND, "채팅방을 찾을 수 없습니다."),
 
     // 409 CONFLICT: 요청이 서버의 현재 상태와 충돌
     ALREADY_CREATED_USER_ID(
@@ -45,6 +48,7 @@ public enum ErrorType implements Type{
     // 500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(
             HttpStatus.INTERNAL_SERVER_ERROR, "서버 에러입니다. 서버 팀에 연락주세요!");
+
 
     private final HttpStatus status;
     private final String message;

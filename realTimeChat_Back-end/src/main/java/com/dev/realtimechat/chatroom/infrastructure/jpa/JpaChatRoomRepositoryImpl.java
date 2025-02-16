@@ -1,8 +1,8 @@
-package com.dev.realtimechat.chatRoom.infrastructure.jpa;
+package com.dev.realtimechat.chatroom.infrastructure.jpa;
 
-import com.dev.realtimechat.chatRoom.domain.ChatRoom;
-import com.dev.realtimechat.chatRoom.infrastructure.ChatRoomRepository;
-import com.dev.realtimechat.chatRoom.infrastructure.springdatajpa.SpringDataJpaChatRoomRepository;
+import com.dev.realtimechat.chatroom.domain.ChatRoom;
+import com.dev.realtimechat.chatroom.infrastructure.ChatRoomRepository;
+import com.dev.realtimechat.chatroom.infrastructure.springdatajpa.SpringDataJpaChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class JpaChatRoomRepository implements ChatRoomRepository {
+public class SpringDataJpaChatRoomRepositoryImpl implements ChatRoomRepository {
     private final SpringDataJpaChatRoomRepository springDataJpaChatRoomRepository;
 
     @Override

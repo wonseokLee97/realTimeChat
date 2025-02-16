@@ -1,6 +1,6 @@
 package com.dev.realtimechat.chat.domain;
 
-import com.dev.realtimechat.chatRoom.domain.ChatRoom;
+import com.dev.realtimechat.chatroom.domain.ChatRoom;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,27 +12,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class Chat {
+public class Chat extends ChatBase{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "chatroom_id")
-    private ChatRoom chatRoom;
-
-    private String randId;
-
-    private String nameTag;
-
-    private String ipAddress;
-
-    @Column(columnDefinition = "TEXT")
-    private String message;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     // 정적 팩터리 메서드, 도메인 패턴
     @Builder
