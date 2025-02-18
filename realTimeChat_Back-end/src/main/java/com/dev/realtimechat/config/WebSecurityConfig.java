@@ -49,12 +49,8 @@ public class WebSecurityConfig {
                                 configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         )
                         .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/").permitAll()
-                                .requestMatchers("/chatroom/**").authenticated() // 채팅방 crud 인증 필요
-                                .requestMatchers("/chat").authenticated() // WebSocket Handshake 경로에 인증 적용
-                                .requestMatchers("/pub/**").authenticated() // 메시지 전송 경로 인증
-                                .requestMatchers("/sub/**").permitAll() // 메시지 구독 경로 인증
-                                .anyRequest().authenticated()
+                                .requestMatchers("/", "/connect/**").permitAll()
+                                .requestMatchers("/init", "/chatroom/**", "/message/**").authenticated()
                         )
                         // JWT 인증처리
                         .authenticationProvider(jwtAuthenticationProvider)
@@ -64,7 +60,6 @@ public class WebSecurityConfig {
                         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
                         // 특정 경로에만 이 보안 설정 적용
-                        .securityMatcher("/chatroom/**", "/init", "/message")
 
                         // SecurityFilterChain 빌드
                         .build();

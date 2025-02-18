@@ -28,7 +28,7 @@ import java.util.Set;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final Set<String> SECURED_API_PATHS = Set.of(
-            "/chatroom/**", "/init", "/message"
+            "/init", "/chatroom/**", "/message/**"
     );
 
     private final AuthenticationManager authenticationManager;
@@ -43,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveJwtToken(request);
         String ipAddress = IpAddressUtil.extractIpAddress(request); // Client IP
 
+        log.info("들어옴?");
 
         // Case the token doesn't exist
         if (token == null || token.equals("null")) {
@@ -57,6 +58,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Authentication authentication = authenticationManager.authenticate(authRequest);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
+
+            log.info("됐어?");
         } catch (ExpiredJwtException e) {
             handleExpiredToken(ipAddress, response);
         } catch (Exception e) {
