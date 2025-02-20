@@ -11,7 +11,7 @@ public interface SpringDataMongoChatRepository extends MongoRepository<Chat, Str
 
     // Offset 기반 페이징 (List로 반환)
     @Query("{ 'chatroomId': ?0 }") // chatroomId 기준으로 필터링
-    List<Chat> findChatsWithPaginationByOffset(String roomId, int limit, int offset);
+    List<Chat> findChatsWithPaginationByLimit(String roomId, int limit);
 
     // lastMessageId 기반 페이징 (List로 반환)
     @Query("{ 'chatroomId': ?0, 'id': { $lt: ?1 } }") // chatroomId 기준 필터링, lastMessageId보다 작은 id

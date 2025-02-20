@@ -9,6 +9,6 @@ import java.util.List;
 @Component
 public interface ChatService {
     Chat createChat(ChatMessageDto.ChatMessageRequest request, String randId, String nameTag, String ipAddress);
-    List<ChatMessageDto.ChatMessageResponse> getChatListByOffset(String chatRoomId, int limit, int offset );
+    List<ChatMessageDto.ChatMessageResponse> getChatListByLimit(String chatRoomId, int limit);
     List<ChatMessageDto.ChatMessageResponse> getChatListByLastMessageId(String chatRoomId, int limit, int lastMessageId);
 }

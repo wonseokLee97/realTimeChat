@@ -42,8 +42,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<ChatMessageDto.ChatMessageResponse> getChatListByOffset(String roomId, int limit, int offset) {
-        return chatRepository.findChatsWithPaginationByOffset(roomId, limit, offset).stream()
+    public List<ChatMessageDto.ChatMessageResponse> getChatListByLimit(String roomId, int limit) {
+        return chatRepository.findChatsWithPaginationByLimit(roomId, limit).stream()
                 .map(ChatMessageDto.ChatMessageResponse::create) // 각 Chat 객체를 ChatMessageResponse 로 변환
                 .collect(Collectors.toList()); // 변환된 결과를 List 로 수집
     }

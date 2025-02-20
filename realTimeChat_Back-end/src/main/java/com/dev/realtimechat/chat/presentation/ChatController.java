@@ -16,16 +16,15 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    // 최초 로딩 (OFFSET 기반 페이징)
-    @GetMapping("/offset")
-    public ApiResponse<?> getChatListByOffset(
+    // 최초 로딩 (Limit 기반 페이징)
+    @GetMapping
+    public ApiResponse<?> getChatListByLimit(
             @RequestParam("roomId") String roomId,
-            @RequestParam("limit") int limit,
-            @RequestParam("offset") int offset
+            @RequestParam("limit") int limit
     ) {
         log.info("Get chat list By Offset");
         return ApiResponse.success(
-                chatService.getChatListByOffset(roomId, limit, offset),
+                chatService.getChatListByLimit(roomId, limit),
                 HttpSuccessType.SUCCESS_GET_CHAT_LIST);
     }
 

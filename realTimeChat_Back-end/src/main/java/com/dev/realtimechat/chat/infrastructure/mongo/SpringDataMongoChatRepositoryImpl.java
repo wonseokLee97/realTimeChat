@@ -16,8 +16,8 @@ public class SpringDataMongoChatRepositoryImpl implements ChatRepository {
     }
 
     @Override
-    public List<Chat> findChatsWithPaginationByOffset(String roomId, int limit, int offset) {
-        return springDataMongoChatRepository.findChatsWithPaginationByOffset(roomId, limit, offset);
+    public List<Chat> findChatsWithPaginationByLimit(String roomId, int limit) {
+        return springDataMongoChatRepository.findChatsWithPaginationByLimit(roomId, limit);
     }
 
     @Override

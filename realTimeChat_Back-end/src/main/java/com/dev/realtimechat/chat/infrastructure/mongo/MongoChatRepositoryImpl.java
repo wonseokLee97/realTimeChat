@@ -24,10 +24,9 @@ public class MongoChatRepositoryImpl implements ChatRepository {
     }
 
     @Override
-    public List<Chat> findChatsWithPaginationByOffset(String roomId, int limit, int offset) {
+    public List<Chat> findChatsWithPaginationByLimit(String roomId, int limit) {
         Query query = new Query(Criteria.where("chat_room_id").is(roomId))
                 .with(Sort.by(Sort.Direction.DESC, "created_at"))  // created_at 기준 내림차순 정렬 추가
-                .skip(offset)
                 .limit(limit);
         return mongoTemplate.find(query, Chat.class);
     }
