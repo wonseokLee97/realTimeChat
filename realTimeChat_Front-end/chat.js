@@ -7,16 +7,16 @@ class WebSocketManager {
         this.subscriptionId = 'entry-' + roomId;
         this.randId = null;
         this.nameTag = null;
-        this.chatList = null;
         this.previousScrollPos = null;
         this.localhost = 'http://localhost:8080';
         this.hasMoreData = true;
-        this.offset = 0;
+        this.lastMessageId = null;
+        this.rec = false;
     }
 
     // WebSocket 연결 함수
     async connect() {
-        const socket = new SockJS(this.localhost + '/chat');  // SockJS를 사용하여 WebSocket 연결
+        const socket = new SockJS(this.localhost + '/connect');  // SockJS를 사용하여 WebSocket 연결
         this.stompClient = Stomp.over(socket);  // Stomp 클라이언트 설정
 
         // JWT 토큰 디코딩 후 사용자 정보 추출
@@ -36,7 +36,7 @@ class WebSocketManager {
         };
 
         // WebSocket 서버에 연결
-        this.stompClient.connect(headers, this.onConnect.bind(this), this.onError.bind(this));
+        this.stompClient.connect(headers, this.onConnect.bind(this));
     }
 
     // JWT 토큰 디코딩 함수
@@ -50,7 +50,19 @@ class WebSocketManager {
     // WebSocket 연결 성공 시 호출되는 콜백 함수
     onConnect(frame) {
         console.log('Connected: ' + frame);
-        this.loadChat();  // 기존 채팅 메시지 로드
+
+        if (this.rec == false) this.loadChat();  // 기존 채팅 메시지 로드
+
+        // 에러 구독
+        this.stompClient.subscribe('/user/queue/errors', (message) => {
+            const errorMessage = JSON.parse(message.body);  // 메시지를 파싱
+            console.error("Error occurred:", errorMessage);  // 에러 메시지 출력
+            console.log("Error Detail:", errorMessage.message);  // 에러 상세 메시지 출력
+            alert(errorMessage.message);
+            
+            // 추가적으로 UI에서 에러를 보여주는 부분을 처리할 수도 있음
+            // 예: alert(errorMessage.message);
+        });
 
         // 채팅 메시지 구독
         this.stompClient.subscribe('/sub/channel/' + this.roomId, (chatMessage) => {
@@ -64,44 +76,35 @@ class WebSocketManager {
         });
     }
 
-    // WebSocket 연결 실패 시 호출되는 콜백 함수
-    onError(error) {
-        console.error("WebSocket 연결 실패: ", error);
-        this.expired = true;  // 연결 실패 시 상태 변경
-        this.reconnect();  // 재접속 시도
-    }
+    // // WebSocket 연결 실패 시 호출되는 콜백 함수
+    // onError(error) {
+    //     console.error("WebSocket 연결 실패: ", error);
+    //     this.rec = true;
+    //     this.reconnect();  // 재접속 시도
+    // }
 
-    // WebSocket 재연결 시도 함수
-    reconnect() {
-        setTimeout(() => {
-            console.log("Reconnecting WebSocket...");
-            if (!this.isConnected()) {
-                this.connect();  // 연결이 되어 있지 않으면 재연결
-            }
-        }, 5000); // 5초 후 재시도
-    }
+    // // WebSocket 재연결 시도 함수
+    // reconnect(attempt = 1) {
+    //     if (attempt > 5) {
+    //         console.error("WebSocket 재연결 시도 5회 초과. 연결 중단.");
+    //         return;
+    //     }
+    
+    //     setTimeout(() => {
+    //         if (!this.isConnected()) {
+    //             console.log(`WebSocket 재연결 시도 ${attempt}...`);
+    //             this.connect();
+    //             this.reconnect(attempt + 1);
+    //         }
+    //     }, 10000);
+    // }
 
+    
     // WebSocket 연결 상태 확인 함수
     isConnected() {
         return this.stompClient && this.stompClient.connected;
     }
 
-    // // 기존 채팅 목록 로드 함수
-    // async loadChat() {
-    //     const chatList = await this.getChatList();  // 채팅 목록 불러오기
-    //     const chatContainer = $("#chatting");
-    //     chatContainer.empty();  // 기존 채팅 목록 초기화
-
-    //     // 채팅 메시지가 있으면 화면에 추가
-    //     if (chatList && chatList.length > 0) {
-    //         chatList.forEach(chatMessage => {
-    //             const chatHtml = this.createChatHtml(chatMessage.randId + " " + chatMessage.nameTag, chatMessage.message, chatMessage.createdAt, chatMessage.ipAddress);
-    //             chatContainer.append(chatHtml);
-    //         });
-    //     }
-        
-    //     this.scrollChatToBottom();  // 채팅 목록이 하단에 위치하도록 스크롤
-    // }
 
     async loadChat() {
         const chatContainer = $("#chatting");
@@ -115,12 +118,19 @@ class WebSocketManager {
 
         const chatContainer = $("#chatting");
 
-        console.log(`Loading chats from offset: ${this.offset}`);
+        console.log(`Loading chats from lastMessageId: ${this.lastMessageId}`);
 
+        // 첫 로딩시에는 가장 최근 메시지들을 가져온다.
+        // 근데, hasMoreData가 False가 되는 경우는 가장 마지막 메시지에 닿았을 때 더 이상 가져오지 못하는 것이다.
+        // 따라서 이 경우 데이터가 더 추가되던 말던 이미 마지막 메시지까지 다 긁어왔기 때문에 더 이상 데이터를 가져올 필요가 없다.
         let messagesToDisplay = null;
         // 서버에서 10개씩 데이터 가져오기
         if (this.hasMoreData) {
-            messagesToDisplay = await this.getChatList(this.offset, 10); // offset과 limit 전달
+            if (this.lastMessageId == null) {
+                messagesToDisplay = await this.getChatListByLimit(10); // offset과 limit 전달
+            } else {
+                messagesToDisplay = await this.getChatListByLastMessageId(this.lastMessageId, 10);
+            }
         }
 
         if (!messagesToDisplay || messagesToDisplay.length === 0) {
@@ -129,26 +139,31 @@ class WebSocketManager {
             return; // 더 이상 데이터가 없으면 종료
         }
 
+        for (let i = 0; i < messagesToDisplay.length; i++) {
+            const chatMessage = messagesToDisplay[i];
+            if (i == messagesToDisplay.length - 1) {
+                this.lastMessageId = chatMessage.id;
+            }
 
-        messagesToDisplay.forEach(chatMessage => {
-            const chatHtml = this.createChatHtml(chatMessage.randId + " " + chatMessage.nameTag, chatMessage.message, chatMessage.createdAt, chatMessage.ipAddress);
+            const chatHtml = this.createChatHtml(
+                chatMessage.randId + " " + chatMessage.nameTag,
+                chatMessage.message,
+                chatMessage.createdAt,
+                chatMessage.ipAddress
+            );
             chatContainer.prepend(chatHtml);  // 위쪽에 추가 (스크롤 위치를 위로 올리기 위해)
-        });
-
+        }
+        
 
         if (this.previousScrollPos != null) {
             this.scrollToPreviousPosition();
         } else {
             this.scrollChatToBottom();
         }
-
-        // offset 증가
-        this.offset += 10;
     }
 
     setupScrollEvent() {
         const chatContainer = $("#chatting");
-    
         // 스크롤 이벤트 처리
         chatContainer.on('scroll', () => {
             if (chatContainer.scrollTop() === 0) {  // 스크롤이 맨 위에 도달했을 때
@@ -180,7 +195,6 @@ class WebSocketManager {
     };
 
     
-
     // 날짜 구분선을 추가하는 함수
     addDateDivider(date) {
         const dateDivider = `<div class="date-divider">${date}</div>`;
@@ -205,12 +219,11 @@ class WebSocketManager {
     }
 
 
-
-    // 서버에서 채팅 목록을 불러오는 함수
-    async getChatList(offset, limit) {
+    // offset 기준으로 페이지네이션
+    async getChatListByLimit(limit) {
         try {
             const response = await fetch(
-                this.localhost + `/message?roomId=${this.roomId}&limit=${limit}&offset=${offset}`, 
+                this.localhost + `/message?roomId=${this.roomId}&limit=${limit}`, 
             {
                 method: "GET",
                 headers: { Authorization: 'Bearer ' + this.token }  // Authorization 헤더 추가
@@ -226,6 +239,28 @@ class WebSocketManager {
             console.error(error);
         }
     }
+
+    // lastMessageId 기준으로 페이지네이션
+    async getChatListByLastMessageId(lastMessageId, limit) {
+        try {
+            const response = await fetch(
+                this.localhost + `/message/lastMessageId?roomId=${this.roomId}&limit=${limit}&lastMessageId=${lastMessageId}`, 
+            {
+                method: "GET",
+                headers: { Authorization: 'Bearer ' + this.token }  // Authorization 헤더 추가
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const chatList = await response.json();
+            return chatList.response;  // 서버에서 받은 채팅 목록 반환
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     // 새 채팅 메시지 화면에 표시하는 함수
     showChat(chatMessage) {
@@ -288,6 +323,7 @@ class WebSocketManager {
             "randId": this.randId,
             "nameTag": this.nameTag
         };
+
         this.stompClient.send("/pub/chat", headers, JSON.stringify(request));  // 서버로 메시지 전송
     }
 }
@@ -297,7 +333,7 @@ class ChatApp {
         this.websocketManager = null;  // WebSocketManager 인스턴스 초기화
         this.localhost = 'http://localhost:8080';
         this.token = localStorage.getItem('token'); // localStorage 에서 가져옴
-        this.roomId = "9fc1b646-e043-463b-aa17-ff9063540342"
+        this.roomId = "723a2a33-577b-4380-8116-a1aa8e5868d3"
     }
 
     // 애플리케이션 초기화 함수
